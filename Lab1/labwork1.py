@@ -1,4 +1,3 @@
-
 def sums(nums, trgt):
     num = {}
     for i in range(len(nums)):
