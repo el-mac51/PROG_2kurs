@@ -44,21 +44,6 @@ class TestTree(unittest.TestCase):
         self.assertIsNone(root.left)
         self.assertIsNone(root.right)
 
-    def test_height_2(self): #проверям дерево высотой 2
-
-        root = Ttree(4, 2) #это высота 1
-        self.assertEqual(root.value, 4) #проверяем корень дерева
-        
-        self.assertIsNotNone(root.left) #это высота 2
-        self.assertEqual(root.left.value, 16)
-        self.assertIsNotNone(root.right)
-        self.assertEqual(root.right.value, 5)
-
-        self.assertIsNone(root.left.left) #проевряем что после 2й высоты ничего
-        self.assertIsNone(root.left.right)
-        self.assertIsNone(root.right.left)
-        self.assertIsNone(root.right.right)
-
     def test_edges(self):
 
         self.assertIsNone(Ttree(4, 0))
@@ -85,6 +70,48 @@ class TestTree(unittest.TestCase):
         root = Ttree(10, 2)
         self.assertEqual(root.left.value, 40)  
         self.assertEqual(root.right.value, 11) 
+    
+    def test_height_2(self): #проверям дерево высотой 2
+
+        root = Ttree(4, 2) #это высота 1
+        self.assertEqual(root.value, 4) #проверяем корень дерева
+        
+        self.assertIsNotNone(root.left) #это высота 2
+        self.assertEqual(root.left.value, 16)
+        self.assertIsNotNone(root.right)
+        self.assertEqual(root.right.value, 5)
+
+        self.assertIsNone(root.left.left) #проевряем что после 2й высоты ничего
+        self.assertIsNone(root.left.right)
+        self.assertIsNone(root.right.left)
+        self.assertIsNone(root.right.right)
+
+    def test_height3(self): #проверям дерево высотой 3
+
+        root = Ttree(4, 3)
+        self.assertEqual(root.left.left.value, 64)   #проверякм значения для высоты 3
+        self.assertEqual(root.left.right.value, 17)  
+        self.assertEqual(root.right.left.value, 20)  
+        self.assertEqual(root.right.right.value, 6)  
+
+    def test_formulas(self):
+
+        root = Ttree(3, 2, lambda x: x*2, lambda x: x+5) #проверяем работу функций с лямбдами
+        self.assertEqual(root.left.value, 6)    
+        self.assertEqual(root.right.value, 8)   
+
+    def test_node_count(self):
+        #проверяем количество узлов
+        def count_nodes(node):
+            if not node: return 0
+            return 1 + count_nodes(node.left) + count_nodes(node.right)
+        self.assertEqual(count_nodes(Ttree(4, 1)), 1)
+        self.assertEqual(count_nodes(Ttree(4, 2)), 3)
+        self.assertEqual(count_nodes(Ttree(4, 3)), 7)
+
+    def test_negative_height(self): #проверим отрицательную высоту
+        
+        self.assertIsNone(Ttree(4, -1))
 
 if __name__ == "__main__":
     unittest.main()
