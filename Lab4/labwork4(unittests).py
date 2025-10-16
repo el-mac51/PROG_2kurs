@@ -6,9 +6,13 @@ class Treenode:
         self.left = None
         self.right = None
 
-def Ttree(root_value, max_height):
+def Ttree(root_value, max_height,
+          left_formula = lambda x: x * 4,
+          right_formula = lambda x: x + 1):
+        
     if max_height <= 0:
         return None
+     
     root = Treenode(root_value)
     queue = [] # создание пустой очереди
     queue.append((root, 1))
@@ -16,12 +20,12 @@ def Ttree(root_value, max_height):
     while queue:
         current_node, current_depth = queue.pop(0)
         if current_depth < max_height:
-                left_value = current_node.value * 4
+                left_value = left_formula(current_node.value)
                 left_child = Treenode(left_value)
                 current_node.left = left_child
                 queue.append((left_child, current_depth + 1))
 
-                right_value = current_node.value + 1
+                right_value = right_formula(current_node.value)
                 right_child = Treenode(right_value)
                 current_node.right = right_child
                 queue.append((right_child, current_depth + 1))
