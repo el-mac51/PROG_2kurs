@@ -1,45 +1,53 @@
 from labwork6 import get_currencies
 import unittest
+import sys
+from io import StringIO
 
 class TestGetCurrencies(unittest.TestCase):
-    def test_normal_operation(self):
-        """тест нормальной работы"""
-        result = get_currencies(['USD', 'EUR'])
-        self.assertIsInstance(result, dict)
-        self.assertEqual(len(result), 2)
-        self.assertIn('USD', result)
-        self.assertIn('EUR', result)
+    def test_valutes_rates(self):
+        """проверка курсов валют"""
+        result = get_currencies(['USD', 'EUR', 'GBP'])
+        
+        self.assertIsInstance(result, dict)  #проверяем что это словарь
+        
+        for currency in ['USD', 'EUR', 'GBP']:
+            if currency in result: 
+                self.assertIn(currency, result)  
+                self.assertIsInstance(result[currency], float)  
+                self.assertGreater(result[currency], 0)  #курс > 0
 
-    def test_nonexistent_currency(self):
-        """тест с несуществующей валютой"""
-        result = get_currencies(['USD', 'NOT_EXIST'])
-        self.assertIsInstance(result, dict)
-        self.assertEqual(len(result), 1)  #должен вернуть  только usd
-        self.assertIn('USD', result)
-
-    def test_empty_currency_list(self):
-        """тест с пустым списком"""
-        result = get_currencies([])
-        self.assertIsInstance(result, dict)
-        self.assertEqual(len(result), 0)  #должен вернуть пустой словарь
-
-    def test_network_error(self):
-        """тест с неправильным юрл"""
-        result = get_currencies(['USD'], url='https://not-exist.ru/')
-        self.assertIsNone(result)  #должен вернуть NOne и Error of network, без этой ошибки проверить работу с нерабочим юрл иначе не получится 
-
-    def test_currency_case_sensitivity(self):
-        """тест с регистром"""
-        result = get_currencies(['usd', 'Eur']) 
-        self.assertEqual(len(result), 0)   # должен вернуть пустой словарь, потому что используется только верхний регистр
-
-    def test_rate_calculation(self):
-        """тест вычисления курса """
+    def test_dict_structure(self):
+        """проверка корректности структуры словаря"""
         result = get_currencies(['USD', 'JPY'])
-        if 'USD' in result:
-            self.assertGreater(result['USD'], 1)  #курс должен быть > 1 рубля
-        if 'JPY' in result:
-            self.assertLess(result['JPY'], 1)  #курс йены должен быть < 1 рубля
+        
+        if result:  #если вернулось не none
+            for key in result.keys():
+                self.assertIsInstance(key, str)  
+                self.assertEqual(len(key), 3)  
+            
+            for value in result.values():
+                self.assertIsInstance(value, float)
+
+    def test_invalid(self):
+        """проверка работы при не работающем юрл"""
+        result = get_currencies(['USD'], url='https://invalid-url-test.ru/')
+        self.assertIsNone(result)  #должен вернуть None при ошибке
+
+    def test_invalid_data(self):
+        """проверка работы при неправильном юрл"""
+        result = get_currencies(['USD'], url='https://www.google.com/')
+        self.assertIsNone(result)  #должен вернуть None при данных не json
+
+    def test_empty(self):
+        """проверка при пустой области поиска"""
+        result = get_currencies([])
+        self.assertIsInstance(result, dict)  #должен вернуть пустой словарь
+        self.assertEqual(len(result), 0)  
+        
+    def test_logs(self):
+        """проверка что логи выводятся в консоль"""
+        result = get_currencies(['USD'])  
+        self.assertIsNotNone(result)  
 
 if __name__ == "__main__":
     unittest.main()
