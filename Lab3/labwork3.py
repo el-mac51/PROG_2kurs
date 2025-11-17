@@ -1,27 +1,34 @@
-class TreeNode:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def tree(root, max_height, current_height = 1):
-    if current_height > max_height:
+def gen_bin_tree(height=4, root=4, left_leaf=lambda x: x * 4, right_leaf=lambda x: x + 1):
+    """
+    генерирует бинарное дерево 
+    
+    эта функция рекурсивно создает бинарное дерево, где каждый узел представлен
+    в виде кортежа (value, left_child, right_child). Дерево строится с использованием
+    предоставленных функций для генерации дочерних узлов.
+    
+    Args:
+        height (int): максимальная высота дерева 
+        root: значение корневого узла
+        left_leaf (callable): функция для генерации значения левого потомка из значения родителя
+        right_leaf (callable): Функция для генерации значения правого потомка из значения родителя
+    
+    Returns:
+        tuple or None: Корневой узел сгенерированного бинарного дерева в формате 
+                      (value, left, right), или None если высота равна 0.
+    """
+    def build_tree(current_root, current_height=1):
+        if current_height > height:
+            return None
+        
+        if current_height == height:
+            return (current_root, None, None)
+        
+        left_child = build_tree(left_leaf(current_root), current_height + 1)
+        right_child = build_tree(right_leaf(current_root), current_height + 1)
+        
+        return (current_root, left_child, right_child)
+    
+    if height <= 0:
         return None
-    node = TreeNode(root)
-    if current_height < max_height:
-        node.left = tree(root * 4, max_height, current_height + 1)
-        node.right = tree(root + 1, max_height, current_height + 1)
-    return node
-
-my_tree = tree(root = 4, max_height = 4)
-
-# def print_tree(root, level=0, prefix=""): #код для вывода дерева
-#     if root is not None:
-#         print_tree(root.right, level + 1, "/--- ")
-#         if level == 0:
-#             print(" " * (level * 6) + "Root: " + str(root.value))
-#         else:
-#             print(" " * (level * 6) + prefix + str(root.value))
-#         print_tree(root.left, level + 1, "\\--- ")
-# my_tree = tree(root=4, max_height=4)
-# print_tree(my_tree)
+    
+    return build_tree(root)
