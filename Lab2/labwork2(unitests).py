@@ -1,15 +1,5 @@
 import unittest
-# from labwork1 import sums #первый вариант подключения функции
-
-def sums(nums, trgt): #второй вариант
-    num = {}
-    for i in range(len(nums)):
-        current = nums[i]
-        comple = trgt - current
-        if comple in num:
-            return [num[comple], i]
-        num[current] = i
-    return
+from labwork1 import sums #первый вариант подключения функции
 
 class TestSums(unittest.TestCase):
 
