@@ -63,29 +63,3 @@ class csv_decorator(currency_decorator):
         text_data = self.get_data()
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(text_data)
-
-if __name__ == "__main__":
-    # 1. Создаём источник данных
-    api = centralbank_api()
-    
-    # 2. Создаём YAML декоратор и оборачиваем api
-    yaml_wrapper = yaml_decorator(api)
-    
-    # 3. Получаем и печатаем данные в YAML
-    print("=== YAML формат ===")
-    print(yaml_wrapper.get_data())
-    
-    # 4. Сохраняем в файл
-    yaml_wrapper.save_to_file("rates.yaml")
-    print("Файл rates.yaml сохранён!\n")
-    
-    # 5. Создаём CSV декоратор (можно обернуть тот же api)
-    csv_wrapper = csv_decorator(api)
-    
-    # 6. Получаем и печатаем данные в CSV
-    print("=== CSV формат ===")
-    print(csv_wrapper.get_data())
-    
-    # 7. Сохраняем в файл
-    csv_wrapper.save_to_file("rates.csv")
-    print("Файл rates.csv сохранён!")
